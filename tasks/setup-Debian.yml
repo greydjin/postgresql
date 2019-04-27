@@ -1,0 +1,30 @@
+---
+- name: Add an Apt signing key, uses whichever key is at the URL
+  apt_key:
+    url: http://1c.postgrespro.ru/keys/GPG-KEY-POSTGRESPRO-1C
+    state: present
+
+- apt_repository:
+    repo: deb http://1c.postgrespro.ru/deb/ {{ ansible_distribution_release }} main
+    state: present
+
+- name: Ensure PostgreSQL Python libraries are installed.
+  apt:
+    name: "{{ postgresql_python_library }}"
+    state: present
+
+- name: Ensure PostgreSQL packages are installed.
+  apt:
+    name: "{{ postgresql_packages }}"
+    state: present
+
+- name: Ensure all configured locales are present.
+  locale_gen: "name={{ item }} state=present"
+  with_items: "{{ postgresql_locales }}"
+  register: locale_gen_result
+
+- name: Force-restart PostgreSQL after new locales are generated.
+  service:
+    name: "{{ postgresql_daemon }}"
+    state: restarted
+  when: locale_gen_result.changed

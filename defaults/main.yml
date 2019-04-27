@@ -1,0 +1,132 @@
+---
+# RHEL/CentOS only. Set a repository to use for PostgreSQL installation.
+postgresql_enablerepo: ""
+
+# Set postgresql state when configuration changes are made. Recommended values:
+# `restarted` or `reloaded`
+postgresql_restarted_state: "restarted"
+
+postgresql_python_library: python-psycopg2
+postgresql_user: postgres
+postgresql_group: postgres
+
+postgresql_unix_socket_directories:
+  - /var/run/postgresql
+
+postgresql_shared_buffers: 
+  - 15GB
+postgresql_effective_cache_size: 
+  - 45GB
+postgresql_maintenance_work_mem:
+  - 2GB
+postgresql_checkpoint_completion_target:
+  - 0.9
+postgresql_wal_buffers:
+  - 16MB
+postgresql_default_statistics_target:
+  - 100
+postgresql_random_page_cost:
+  - 1.1
+postgresql_effective_io_concurrency:
+  - 200
+postgresql_work_mem:
+  - 19660kB
+postgresql_min_wal_size:
+  - 1GB
+postgresql_max_wal_size:
+  - 2GB
+postgresql_max_worker_processes:
+  - 8
+postgresql_max_parallel_workers_per_gather:
+  - 4
+postgresql_max_connections:
+  - 500
+postgresql_autovacuum:
+  - on
+postgresql_autovacuum_max_workers:
+  - 3
+postgresql_autovacuum_naptime:
+  - 1min
+
+postgresql_service_state: started
+postgresql_service_enabled: true
+
+# Global configuration options that will be set in postgresql.conf.
+postgresql_global_config_options:
+  - option: unix_socket_directories
+    value: '{{ postgresql_unix_socket_directories | join(",") }}'
+  - option: shared_buffers
+    value: '{{ postgresql_shared_buffers | join(",") }}'
+  - option: effective_cache_size
+    value: '{{ postgresql_effective_cache_size | join(",") }}'
+  - option: maintenance_work_mem
+    value: '{{ postgresql_maintenance_work_mem | join(",") }}'
+  - option: checkpoint_completion_target
+    value: '{{ postgresql_checkpoint_completion_target | join(",") }}'
+  - option: wal_buffers
+    value: '{{ postgresql_wal_buffers | join(",") }}'
+  - option: default_statistics_target
+    value: '{{ postgresql_default_statistics_target | join(",") }}'
+  - option: random_page_cost
+    value: '{{ postgresql_random_page_cost | join(",") }}'
+  - option: effective_io_concurrency
+    value: '{{ postgresql_effective_io_concurrency | join(",") }}'
+  - option: work_mem
+    value: '{{ postgresql_work_mem | join(",") }}'
+  - option: min_wal_size
+    value: '{{ postgresql_min_wal_size | join(",") }}'
+  - option: max_wal_size
+    value: '{{ postgresql_max_wal_size | join(",") }}'
+  - option: max_worker_processes
+    value: '{{ postgresql_max_worker_processes | join(",") }}'
+  - option: max_parallel_workers_per_gather
+    value: '{{ postgresql_max_parallel_workers_per_gather | join(",") }}'
+  - option: max_connections
+    value: '{{ postgresql_max_connections | join(",") }}'
+  - option: autovacuum
+    value: '{{ postgresql_autovacuum | join(",") }}'
+  - option: autovacuum_max_workers
+    value: '{{ postgresql_autovacuum_max_workers | join(",") }}'
+  - option: autovacuum_naptime
+    value: '{{ postgresql_autovacuum_naptime | join(",") }}'
+
+# Host based authentication (hba) entries to be added to the pg_hba.conf. This
+# variable's defaults reflect the defaults that come with a fresh installation.
+postgresql_hba_entries:
+  - {type: local, database: all, user: postgres, auth_method: trust}
+  - {type: local, database: all, user: postgres, auth_method: ident}
+  - {type: host, database: all, user: all, address: '0.0.0.0/0', auth_method: trust}
+
+# Debian only. Used to generate the locales used by PostgreSQL databases.
+postgresql_locales:
+  - 'ru_RU.UTF-8'
+
+# Databases to ensure exist.
+postgresql_databases: []
+# - name: exampledb # required; the rest are optional
+#   lc_collate: # defaults to 'en_US.UTF-8'
+#   lc_ctype: # defaults to 'en_US.UTF-8'
+#   encoding: # defaults to 'UTF-8'
+#   template: # defaults to 'template0'
+#   login_host: # defaults to 'localhost'
+#   login_password: # defaults to not set
+#   login_user: # defaults to '{{ postgresql_user }}'
+#   login_unix_socket: # defaults to 1st of postgresql_unix_socket_directories
+#   port: # defaults to not set
+#   owner: # defaults to postgresql_user
+#   state: # defaults to 'present'
+
+# Users to ensure exist.
+postgresql_users: []
+# - name: jdoe #required; the rest are optional
+#   password: # defaults to not set
+#   encrypted: # defaults to not set
+#   priv: # defaults to not set
+#   role_attr_flags: # defaults to not set
+#   db: # defaults to not set
+#   login_host: # defaults to 'localhost'
+#   login_password: # defaults to not set
+#   login_user: # defaults to '{{ postgresql_user }}'
+#   login_unix_socket: # defaults to 1st of postgresql_unix_socket_directories
+#   port: # defaults to not set
+#   state: # defaults to 'present'
